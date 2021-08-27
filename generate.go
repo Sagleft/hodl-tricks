@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	codeTtPath          = "main_template.go.raw"
-	destinationCodePath = "build/main.go"
+	codeTtPath          = "consts.go.raw"
+	destinationCodePath = "generated_code/main.go"
 )
 
 type solution struct {

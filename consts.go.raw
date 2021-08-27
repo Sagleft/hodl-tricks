@@ -3,7 +3,3 @@ package main
 const (
 	encryptionKey = "%EncryptionKey%"
 )
-
-func main() {
-
-}

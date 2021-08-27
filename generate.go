@@ -1,6 +1,9 @@
 package main
 
-import "log"
+import (
+	"log"
+	"strings"
+)
 
 const (
 	codeTtPath = "main_template.go.raw"
@@ -36,7 +39,8 @@ func (sol *solution) getCodeTt() error {
 }
 
 func (sol *solution) updateCode() error {
-	// TODO
+	encryptionKey := getRandomString(32)
+	sol.CodeTt = strings.ReplaceAll(sol.CodeTt, "%EncryptionKey%", encryptionKey)
 	return nil
 }
 

@@ -1,6 +1,9 @@
 package main
 
-import "io/ioutil"
+import (
+	"io/ioutil"
+	"math/rand"
+)
 
 // ReadFileToString read file to string
 func ReadFileToString(filepath string) (string, error) {
@@ -21,4 +24,13 @@ func checkErrors(errChecks ...errorFunc) error {
 		}
 	}
 	return nil
+}
+
+func getRandomString(length int) string {
+	var symbolRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+	b := make([]rune, length)
+	for i := range b {
+		b[i] = symbolRunes[rand.Intn(len(symbolRunes))]
+	}
+	return string(b)
 }

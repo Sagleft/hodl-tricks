@@ -28,10 +28,17 @@ func main() {
 	//tHandler.parseTimeFromWorldAPI()
 }
 
-func encrypt() {
+func encrypt() error {
+	fileBytes, err := readFile(encryptFromFilePath)
+	if err != nil {
+		return err
+	}
 
+	// TODO
+
+	return nil
 }
 
 func decrypt() {
-
+	// TODO
 }

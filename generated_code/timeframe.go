@@ -8,6 +8,10 @@ import (
 	"time"
 )
 
+const (
+	defaultTimeZone = "Europe/Moscow"
+)
+
 type timeHandler struct{}
 
 func newTimeHandler() timeHandler {
@@ -19,6 +23,7 @@ type timeParserFunc func() (*time.Time, error)
 func (h *timeHandler) getCurrentTime() (*time.Time, error) {
 	handlers := []timeParserFunc{
 		h.parseTimeFromWorldAPI,
+		h.parseTimeFromTimeAPI,
 	}
 
 	for i, handler := range handlers {
@@ -36,13 +41,35 @@ func (h *timeHandler) getCurrentTime() (*time.Time, error) {
 
 func (h *timeHandler) parseTimeFromWorldAPI() (*time.Time, error) {
 	// API GET
-	apiURL := "http://worldtimeapi.org/api/timezone/Europe/Moscow"
+	apiURL := "http://worldtimeapi.org/api/timezone/" + defaultTimeZone
 	responseBytes, err := httpGET(apiURL)
 	if err != nil {
 		return nil, err
 	}
 
 	timeResult := worldTimeAPIResponse{}
+	err = json.Unmarshal(responseBytes, &timeResult)
+	if err != nil {
+		return nil, errors.New("failed to unmarshal api response json: " + err.Error())
+	}
+
+	timeParsed, err := time.Parse(time.RFC3339Nano, timeResult.Time)
+	if err != nil {
+		return nil, errors.New("failed to parse time (api): " + err.Error())
+	}
+
+	return &timeParsed, nil
+}
+
+func (h *timeHandler) parseTimeFromTimeAPI() (*time.Time, error) {
+	// API GET
+	apiURL := "https://www.timeapi.io/api/Time/current/zone?timeZone=" + defaultTimeZone
+	responseBytes, err := httpGET(apiURL)
+	if err != nil {
+		return nil, err
+	}
+
+	timeResult := timeAPIResponse{}
 	err = json.Unmarshal(responseBytes, &timeResult)
 	if err != nil {
 		return nil, errors.New("failed to unmarshal api response json: " + err.Error())

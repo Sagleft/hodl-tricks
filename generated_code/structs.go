@@ -15,3 +15,7 @@ type encryptResult struct {
 type worldTimeAPIResponse struct {
 	Time string `json:"utc_datetime"`
 }
+
+type timeAPIResponse struct {
+	Time string `json:"dateTime"`
+}

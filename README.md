@@ -34,8 +34,8 @@ sh build.sh
 
 Все флаги запуска:
 
-* `mode` - *encrypt, decrypt* - какой алгоритм утилиты используем;
-* `type` - *year, month, day, hour, minute, second* - на какой период шифруем;
+* `mode` - **encrypt, decrypt** - какой алгоритм утилиты используем;
+* `type` - **year, month, day, hour, minute, second** - на какой период шифруем;
 * `duration` - значение для периода. Например, при `type=day` и `duration=7` - файл будет зашифрован на 7 дней;
 
 ## TODO

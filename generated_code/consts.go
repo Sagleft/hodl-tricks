@@ -1,5 +1,5 @@
 package main
 
 const (
-	encryptionKey = "NhuAMyieNeeegPKzkrFqftijsOLAZqUC"
+	encryptionKey = "bNeFgJYJOOyUkCxSGeFlIfzJrArUcJey"
 )

@@ -17,35 +17,43 @@ const (
 func main() {
 	flagMode := flag.String("mode", "encrypt", "encrypt / decrypt")
 	flagDuration := flag.Int("duration", 1, "duration amount")
-	flagType := flag.String("type", "Y", "duration type: Y, M, D")
+	flagType := flag.String("type", "year", "duration type: year, month, day, hour, minute, second")
 	flag.Parse()
-
-	// parse duration
-	var durationAmount int = *flagDuration
-	var lockDuration time.Duration
-	switch *flagType {
-	default:
-		log.Fatalln("unknown duration type given (or not specified?)")
-	case "Y":
-		lockDuration = time.Hour * time.Duration(365*24*durationAmount)
-	case "M":
-		lockDuration = time.Hour * time.Duration(30*24*durationAmount)
-	case "D":
-		lockDuration = time.Hour * time.Duration(24*durationAmount)
-	}
 
 	switch *flagMode {
 	default:
 		log.Fatalln("unknown mode specified (or not specified?)")
 	case "encrypt":
+		// parse duration
+		var durationAmount int = *flagDuration
+		var lockDuration time.Duration
+		switch *flagType {
+		default:
+			log.Fatalln("unknown duration type given (or not specified?)")
+		case "year":
+			lockDuration = time.Hour * time.Duration(365*24*durationAmount)
+		case "month":
+			lockDuration = time.Hour * time.Duration(30*24*durationAmount)
+		case "day":
+			lockDuration = time.Hour * time.Duration(24*durationAmount)
+		case "hour":
+			lockDuration = time.Hour * time.Duration(durationAmount)
+		case "minute":
+			lockDuration = time.Minute * time.Duration(durationAmount)
+		case "second":
+			lockDuration = time.Second * time.Duration(durationAmount)
+		}
+
 		result, err := encrypt(lockDuration)
 		if err != nil {
 			log.Fatalln(err)
 		}
-		log.Println("file encrypted to " + result.TimeTo.String())
+		log.Println("[DONE] File encrypted to " + result.TimeTo.String())
+		log.Println("(!!) You must copy `" + encryptToFilePath + "` file and create " +
+			"several backups so as not to lose")
 		return
 	case "decrypt":
-		err := decrypt(lockDuration)
+		err := decrypt()
 		if err != nil {
 			log.Fatalln(err)
 		}
@@ -92,7 +100,7 @@ func encrypt(duration time.Duration) (*encryptResult, error) {
 	}, nil
 }
 
-func decrypt(duration time.Duration) error {
+func decrypt() error {
 	// TODO
 	//tHandler := newTimeHandler()
 	//tHandler.parseTimeFromWorldAPI()

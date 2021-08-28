@@ -11,7 +11,7 @@ import (
 
 const (
 	codeTtPath          = "consts.go.raw"
-	destinationCodePath = "generated_code/main.go"
+	destinationCodePath = "generated_code/consts.go"
 )
 
 type solution struct {
@@ -34,7 +34,7 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	log.Println("code generated successful!")
+	log.Println("new encryption key generated!")
 }
 
 func (sol *solution) getCodeTt() error {

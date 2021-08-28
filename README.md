@@ -21,7 +21,7 @@ Finally, you can Hodl BTC and guard against himself from selling
 
 Дальше:
 
-1. скачиваем билд из раздела релизов или собираем сами:
+1. **скачиваем билд из раздела релизов** *или собираем сами*:
 
 ```bash
 sh build.sh

@@ -19,3 +19,7 @@ type worldTimeAPIResponse struct {
 type timeAPIResponse struct {
 	Time string `json:"dateTime"`
 }
+
+type worldClockAPIResponse struct {
+	Time string `json:"currentDateTime"`
+}

@@ -24,6 +24,7 @@ func (h *timeHandler) getCurrentTime() (*time.Time, error) {
 	handlers := []timeParserFunc{
 		h.parseTimeFromWorldAPI,
 		h.parseTimeFromTimeAPI,
+		h.parseTimeFromWorldClockAPI,
 	}
 
 	for i, handler := range handlers {
@@ -76,6 +77,28 @@ func (h *timeHandler) parseTimeFromTimeAPI() (*time.Time, error) {
 	}
 
 	timeParsed, err := time.Parse(time.RFC3339Nano, timeResult.Time)
+	if err != nil {
+		return nil, errors.New("failed to parse time (api): " + err.Error())
+	}
+
+	return &timeParsed, nil
+}
+
+func (h *timeHandler) parseTimeFromWorldClockAPI() (*time.Time, error) {
+	// API GET
+	apiURL := "http://worldclockapi.com/api/json/utc/now"
+	responseBytes, err := httpGET(apiURL)
+	if err != nil {
+		return nil, err
+	}
+
+	timeResult := worldClockAPIResponse{}
+	err = json.Unmarshal(responseBytes, &timeResult)
+	if err != nil {
+		return nil, errors.New("failed to unmarshal api response json: " + err.Error())
+	}
+
+	timeParsed, err := time.Parse(time.RFC3339, timeResult.Time)
 	if err != nil {
 		return nil, errors.New("failed to parse time (api): " + err.Error())
 	}

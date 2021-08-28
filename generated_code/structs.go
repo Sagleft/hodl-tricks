@@ -23,3 +23,7 @@ type timeAPIResponse struct {
 type worldClockAPIResponse struct {
 	Time string `json:"currentDateTime"`
 }
+
+type geonamesAPIResponse struct {
+	Time string `json:"time"`
+}

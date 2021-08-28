@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"errors"
 	"time"
 )
 
@@ -10,15 +12,24 @@ func newTimeHandler() timeHandler {
 	return timeHandler{}
 }
 
-func (h *timeHandler) parseTimeFromX() (*time.Time, error) {
+func (h *timeHandler) parseTimeFromWorldAPI() (*time.Time, error) {
 	// API GET
 	apiURL := "http://worldtimeapi.org/api/timezone/Europe/Moscow"
-	_, err := httpGET(apiURL) // responseBytes
+	responseBytes, err := httpGET(apiURL)
 	if err != nil {
 		return nil, err
 	}
 
-	//json.Unmarshal(responseBytes)
+	timeResult := worldTimeAPIResponse{}
+	err = json.Unmarshal(responseBytes, &timeResult)
+	if err != nil {
+		return nil, errors.New("failed to unmarshal api response json: " + err.Error())
+	}
 
-	return nil, nil // TODO
+	timeParsed, err := time.Parse("2021-08-27T23:42:50.573476+00:00", timeResult.Time)
+	if err != nil {
+		return nil, errors.New("failed to parse time: " + err.Error())
+	}
+
+	return &timeParsed, nil
 }

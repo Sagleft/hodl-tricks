@@ -21,3 +21,12 @@ func httpGET(url string) ([]byte, error) {
 
 	return body, nil
 }
+
+// ReadFileToString read file to string
+func ReadFileToString(filepath string) (string, error) {
+	file, err := ioutil.ReadFile(filepath)
+	if err != nil {
+		return "", errors.New("failed to read file: " + err.Error())
+	}
+	return string(file), nil
+}

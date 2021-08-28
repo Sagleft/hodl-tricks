@@ -17,4 +17,3 @@
 build/tool
 build/encrypted.dat
 generated_code/consts.go
-build/encrypted.dat

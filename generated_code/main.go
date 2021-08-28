@@ -18,6 +18,7 @@ func main() {
 	flagMode := flag.String("mode", "encrypt", "encrypt / decrypt")
 	flagDuration := flag.Int("duration", 1, "duration amount")
 	flagType := flag.String("type", "Y", "duration type: Y, M, D")
+	flag.Parse()
 
 	// parse duration
 	var durationAmount int = *flagDuration
@@ -37,19 +38,26 @@ func main() {
 	default:
 		log.Fatalln("unknown mode specified (or not specified?)")
 	case "encrypt":
-		encrypt(lockDuration)
+		result, err := encrypt(lockDuration)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		log.Println("file encrypted to " + result.TimeTo.String())
 		return
 	case "decrypt":
-		decrypt(lockDuration)
+		err := decrypt(lockDuration)
+		if err != nil {
+			log.Fatalln(err)
+		}
 		return
 	}
 }
 
-func encrypt(duration time.Duration) error {
+func encrypt(duration time.Duration) (*encryptResult, error) {
 	// read file
 	fileBytes, err := readFile(encryptFromFilePath)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// create data container
@@ -64,26 +72,29 @@ func encrypt(duration time.Duration) error {
 	// encode data container to json
 	jsonBytes, err := json.Marshal(&data)
 	if err != nil {
-		return errors.New("failed to encode data container to json: " +
+		return nil, errors.New("failed to encode data container to json: " +
 			err.Error())
 	}
 
 	// encrypt data container
 	encryptedData, err := rsaEncrypt(jsonBytes, encryptionKey)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// write data container to file
 	err = saveToFile(encryptToFilePath, encryptedData)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return &encryptResult{
+		TimeTo: timeTo,
+	}, nil
 }
 
-func decrypt(duration time.Duration) {
+func decrypt(duration time.Duration) error {
 	// TODO
 	//tHandler := newTimeHandler()
 	//tHandler.parseTimeFromWorldAPI()
+	return nil
 }

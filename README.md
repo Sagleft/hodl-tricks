@@ -43,3 +43,11 @@ sh build.sh
 * перевести readme на английский?
 * возможно, добавить обфускацию сгенерированного кода;
 * добавить нормальное шифрование через RSA?
+
+## Donate
+
+Чтобы я делал больше крутых штуковин и развивал эту
+
+* BTC: 1Q5jUk4e84fjvUWujUXg5DhR6PuQMnuVka
+* LTC: ltc1qkf27renf2mffgjyngffvv3q2am5h0y4j785f5j
+* ETH: 0x712ddd1CF17E4008DCac63022Ca2346ef786D807

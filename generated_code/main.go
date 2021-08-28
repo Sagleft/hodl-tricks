@@ -12,6 +12,7 @@ const (
 	encryptFromFilePath = "encrypt_this.txt"
 	encryptToFilePath   = "encrypted.dat"
 	decryptToFilePath   = "decrypted.txt"
+	timeLayoutTt        = "2006-01-02 15:04:05.999999999 -0700 MST"
 )
 
 func main() {
@@ -51,6 +52,8 @@ func main() {
 		log.Println("[DONE] File encrypted to " + result.TimeTo.String())
 		log.Println("(!!) You must copy `" + encryptToFilePath + "` file and create " +
 			"several backups so as not to lose")
+		log.Println("(!!) The next run of the utility will overwrite the file." +
+			"Therefore, if you have changed the data file, be careful")
 		return
 	case "decrypt":
 		err := decrypt()
@@ -101,8 +104,41 @@ func encrypt(duration time.Duration) (*encryptResult, error) {
 }
 
 func decrypt() error {
-	// TODO
-	//tHandler := newTimeHandler()
-	//tHandler.parseTimeFromWorldAPI()
+	// read file
+	fileBytes, err := readFile(encryptToFilePath)
+	if err != nil {
+		return err
+	}
+
+	// decrypt file
+	decryptedBytes, err := rsaDecrypt(fileBytes, encryptionKey)
+	if err != nil {
+		return err
+	}
+
+	// json decode
+	data := dataContainer{}
+	err = json.Unmarshal(decryptedBytes, &data)
+	if err != nil {
+		return errors.New("failed to unmarshal data container json: " +
+			err.Error())
+	}
+
+	// parse unlockOn timestamp
+	unlockOnTimeParsed, err := time.Parse(timeLayoutTt, data.UnlockOn)
+	if err != nil {
+		return errors.New("failed to parse time: " + err.Error())
+	}
+
+	// get timestamp from external API
+	tHandler := newTimeHandler()
+	timeFromAPI, err := tHandler.parseTimeFromWorldAPI() // TODO: select time API
+	if err != nil {
+		return err
+	}
+
+	durationDelta := timeFromAPI.Sub(unlockOnTimeParsed)
+	log.Println(durationDelta.Minutes())
+
 	return nil
 }

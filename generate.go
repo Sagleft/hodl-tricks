@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"os"
 	"strings"
+	"time"
 )
 
 const (
@@ -75,6 +76,7 @@ func checkErrors(errChecks ...errorFunc) error {
 }
 
 func getRandomString(length int) string {
+	rand.Seed(int64(time.Now().Nanosecond()))
 	var symbolRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 	b := make([]rune, length)
 	for i := range b {

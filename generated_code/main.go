@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"errors"
 	"flag"
 	"log"
 	"time"
@@ -44,21 +46,39 @@ func main() {
 }
 
 func encrypt(duration time.Duration) error {
+	// read file
 	fileBytes, err := readFile(encryptFromFilePath)
 	if err != nil {
 		return err
 	}
 
-	encryptedData, err := rsaEncrypt(fileBytes, encryptionKey)
+	// create data container
+	timeFrom := time.Now()
+	timeTo := timeFrom.Add(duration)
+	data := dataContainer{
+		CreatedOn: timeFrom.UTC().String(),
+		UnlockOn:  timeTo.UTC().String(),
+		Data:      fileBytes,
+	}
+
+	// encode data container to json
+	jsonBytes, err := json.Marshal(&data)
+	if err != nil {
+		return errors.New("failed to encode data container to json: " +
+			err.Error())
+	}
+
+	// encrypt data container
+	encryptedData, err := rsaEncrypt(jsonBytes, encryptionKey)
 	if err != nil {
 		return err
 	}
 
+	// write data container to file
 	err = saveToFile(encryptToFilePath, encryptedData)
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 

@@ -60,6 +60,7 @@ func main() {
 		if err != nil {
 			log.Fatalln(err)
 		}
+		log.Println("YES! Time's up! File decrypted successfuly!")
 		return
 	}
 }
@@ -137,8 +138,15 @@ func decrypt() error {
 		return err
 	}
 
-	durationDelta := timeFromAPI.Sub(unlockOnTimeParsed)
-	log.Println(durationDelta.Minutes())
+	durationDelta := unlockOnTimeParsed.Sub(*timeFromAPI)
+	if durationDelta > 0 {
+		return errors.New("Time is not up yet. Come back through " + durationDelta.String())
+	}
 
+	// time's up! save decoded file
+	err = saveToFile(decryptToFilePath, data.Data)
+	if err != nil {
+		return err
+	}
 	return nil
 }

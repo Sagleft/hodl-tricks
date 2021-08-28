@@ -26,9 +26,9 @@ func (h *timeHandler) parseTimeFromWorldAPI() (*time.Time, error) {
 		return nil, errors.New("failed to unmarshal api response json: " + err.Error())
 	}
 
-	timeParsed, err := time.Parse("2021-08-27T23:42:50.573476+00:00", timeResult.Time)
+	timeParsed, err := time.Parse(time.RFC3339Nano, timeResult.Time)
 	if err != nil {
-		return nil, errors.New("failed to parse time: " + err.Error())
+		return nil, errors.New("failed to parse time (api): " + err.Error())
 	}
 
 	return &timeParsed, nil

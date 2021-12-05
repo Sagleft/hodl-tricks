@@ -1,14 +1,29 @@
 package main
 
 import (
+	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
 	"errors"
 	"io"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"os"
+)
+
+var (
+	// to check that the IP falls within the range of the private
+	// reference: https://en.wikipedia.org/wiki/Private_network
+	// from subnet -> to subnet
+	ipSubnets = map[int][]string{
+		0: []string{"10.0.0.0", "10.255.255.255"},     // single class A network
+		1: []string{"100.64.0.0", "100.127.255.255"},  // additional network
+		2: []string{"172.16.0.0", "172.31.255.255"},   // 16 contiguous class B networks
+		3: []string{"192.168.0.0", "192.168.255.255"}, // 256 contiguous class C networks
+		4: []string{"127.0.0.0", "127.255.255.255"},   // localhost
+	}
 )
 
 func httpGET(url string) ([]byte, error) {
@@ -119,4 +134,35 @@ func saveToFile(filepath string, content []byte) error {
 		return errors.New("failed to write string to file: " + err.Error())
 	}
 	return nil
+}
+
+// check host IP is local
+func checkHostIP(host string) (bool, error) {
+	// get host IPs
+	ips, err := net.LookupIP(host)
+	if err != nil {
+		return false, errors.New("Could not get IPs for host: " + err.Error())
+	}
+	if len(ips) == 0 {
+		return false, errors.New("host IPs not found")
+	}
+
+	// get host first IP
+	hostIP := ips[0]
+
+	// check IP subnet
+	for _, subnet := range ipSubnets {
+		ipFrom := net.ParseIP(subnet[0])
+		ipTo := net.ParseIP(subnet[1])
+
+		// check IP format
+		if hostIP.To4() == nil {
+			return false, errors.New("failed to get IPv4 for host: " + host)
+		}
+
+		if bytes.Compare(hostIP, ipFrom) >= 0 && bytes.Compare(hostIP, ipTo) <= 0 {
+			return true, nil
+		}
+	}
+	return false, nil
 }

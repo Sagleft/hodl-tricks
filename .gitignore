@@ -16,4 +16,5 @@
 
 build/tool
 build/encrypted.dat
+build/encrypt_this.txt
 generated_code/consts.go

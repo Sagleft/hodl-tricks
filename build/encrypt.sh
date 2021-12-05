@@ -1,0 +1,1 @@
+./tool -type=year -duration=5

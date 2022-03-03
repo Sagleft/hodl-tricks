@@ -11,6 +11,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"strings"
 )
 
 var (
@@ -117,6 +118,9 @@ func rsaDecrypt(encrypted []byte, keyString string) ([]byte, error) {
 	// Decrypt the data
 	result, err := aesGCM.Open(nil, nonce, ciphertext, nil)
 	if err != nil {
+		if strings.Contains(err.Error(), "message authentication failed") {
+			return nil, errors.New("Incorrect decryption key. Are you using the same version of the utility as before?")
+		}
 		return nil, errors.New("failed to open aes gsm: " + err.Error())
 	}
 

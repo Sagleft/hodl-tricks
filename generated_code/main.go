@@ -133,7 +133,7 @@ func decrypt() error {
 
 	// get timestamp from external API
 	tHandler := newTimeHandler()
-	timeFromAPI, err := tHandler.parseTimeFromWorldAPI() // TODO: select time API
+	timeFromAPI, err := tHandler.getCurrentTime()
 	if err != nil {
 		return err
 	}

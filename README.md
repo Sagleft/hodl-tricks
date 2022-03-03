@@ -61,3 +61,9 @@ sh build.sh
 * BTC: 1Q5jUk4e84fjvUWujUXg5DhR6PuQMnuVka
 * LTC: ltc1qkf27renf2mffgjyngffvv3q2am5h0y4j785f5j
 * ETH: 0x712ddd1CF17E4008DCac63022Ca2346ef786D807
+
+---
+
+![image](https://github.com/Sagleft/Sagleft/raw/master/image.png)
+
+### :globe_with_meridians: [Telegram канал](https://t.me/+VIvd8j6xvm9iMzhi)

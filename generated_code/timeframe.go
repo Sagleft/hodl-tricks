@@ -77,7 +77,9 @@ func (h *timeHandler) parseTimeFromTimeAPI() (*time.Time, error) {
 		return nil, errors.New("failed to unmarshal api response json: " + err.Error())
 	}
 
-	timeParsed, err := time.Parse(time.RFC3339Nano, timeResult.Time)
+	// 2021-12-31T02:13:28.272809
+	timeLayout := "2006-01-02T15:04:05.999999999"
+	timeParsed, err := time.Parse(timeLayout, timeResult.Time)
 	if err != nil {
 		return nil, errors.New("failed to parse time (api): " + err.Error())
 	}
@@ -99,7 +101,8 @@ func (h *timeHandler) parseTimeFromWorldClockAPI() (*time.Time, error) {
 		return nil, errors.New("failed to unmarshal api response json: " + err.Error())
 	}
 
-	timeParsed, err := time.Parse(time.RFC3339, timeResult.Time)
+	timeLayout := "2006-01-02T15:04Z"
+	timeParsed, err := time.Parse(timeLayout, timeResult.Time)
 	if err != nil {
 		return nil, errors.New("failed to parse time (api): " + err.Error())
 	}
@@ -119,6 +122,10 @@ func (h *timeHandler) parseTimeFromGeoNamesAPI() (*time.Time, error) {
 	err = json.Unmarshal(responseBytes, &timeResult)
 	if err != nil {
 		return nil, errors.New("failed to unmarshal api response json: " + err.Error())
+	}
+
+	if timeResult.Time == "" {
+		return nil, errors.New("failed to get timestamp from service, empty time found. please try again later")
 	}
 
 	timeParsed, err := time.Parse("2006-01-02 15:04", timeResult.Time)
